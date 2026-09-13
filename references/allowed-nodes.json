@@ -1,0 +1,386 @@
+{
+  "profile": "gtx-1660-ti-6gb",
+  "source": "Extracted from LingyiChen-AI/comfyui-workflow-skill node docs (ComfyUI core INPUT_TYPES) and verified against the SD1.5 templates in templates/6gb.",
+  "nodes": {
+    "CheckpointLoaderSimple": {
+      "outputs": [
+        "MODEL",
+        "CLIP",
+        "VAE"
+      ],
+      "connection_inputs": {},
+      "widgets": [
+        "ckpt_name"
+      ],
+      "widget_count": 1
+    },
+    "CLIPTextEncode": {
+      "outputs": [
+        "CONDITIONING"
+      ],
+      "connection_inputs": {
+        "clip": "CLIP"
+      },
+      "widgets": [
+        "text"
+      ],
+      "widget_count": 1
+    },
+    "EmptyLatentImage": {
+      "outputs": [
+        "LATENT"
+      ],
+      "connection_inputs": {},
+      "widgets": [
+        "width",
+        "height",
+        "batch_size"
+      ],
+      "widget_count": 3
+    },
+    "KSampler": {
+      "outputs": [
+        "LATENT"
+      ],
+      "connection_inputs": {
+        "model": "MODEL",
+        "positive": "CONDITIONING",
+        "negative": "CONDITIONING",
+        "latent_image": "LATENT"
+      },
+      "widgets": [
+        "seed",
+        "control_after_generate",
+        "steps",
+        "cfg",
+        "sampler_name",
+        "scheduler",
+        "denoise"
+      ],
+      "widget_count": 7
+    },
+    "VAEDecode": {
+      "outputs": [
+        "IMAGE"
+      ],
+      "connection_inputs": {
+        "samples": "LATENT",
+        "vae": "VAE"
+      },
+      "widgets": [],
+      "widget_count": 0
+    },
+    "VAEEncode": {
+      "outputs": [
+        "LATENT"
+      ],
+      "connection_inputs": {
+        "pixels": "IMAGE",
+        "vae": "VAE"
+      },
+      "widgets": [],
+      "widget_count": 0
+    },
+    "VAEEncodeForInpaint": {
+      "outputs": [
+        "LATENT"
+      ],
+      "connection_inputs": {
+        "pixels": "IMAGE",
+        "vae": "VAE",
+        "mask": "MASK"
+      },
+      "widgets": [
+        "grow_mask_by"
+      ],
+      "widget_count": 1
+    },
+    "SaveImage": {
+      "outputs": [],
+      "connection_inputs": {
+        "images": "IMAGE"
+      },
+      "widgets": [
+        "filename_prefix"
+      ],
+      "widget_count": 1,
+      "output_node": true
+    },
+    "PreviewImage": {
+      "outputs": [],
+      "connection_inputs": {
+        "images": "IMAGE"
+      },
+      "widgets": [],
+      "widget_count": 0,
+      "output_node": true
+    },
+    "LoadImage": {
+      "outputs": [
+        "IMAGE",
+        "MASK"
+      ],
+      "connection_inputs": {},
+      "widgets": [
+        "image"
+      ],
+      "widget_count": 1
+    },
+    "LoadImageMask": {
+      "outputs": [
+        "MASK"
+      ],
+      "connection_inputs": {},
+      "widgets": [
+        "image",
+        "channel"
+      ],
+      "widget_count": 2
+    },
+    "LoraLoader": {
+      "outputs": [
+        "MODEL",
+        "CLIP"
+      ],
+      "connection_inputs": {
+        "model": "MODEL",
+        "clip": "CLIP"
+      },
+      "widgets": [
+        "lora_name",
+        "strength_model",
+        "strength_clip"
+      ],
+      "widget_count": 3
+    },
+    "ControlNetLoader": {
+      "outputs": [
+        "CONTROL_NET"
+      ],
+      "connection_inputs": {},
+      "widgets": [
+        "control_net_name"
+      ],
+      "widget_count": 1
+    },
+    "ControlNetApplyAdvanced": {
+      "outputs": [
+        "CONDITIONING",
+        "CONDITIONING"
+      ],
+      "connection_inputs": {
+        "positive": "CONDITIONING",
+        "negative": "CONDITIONING",
+        "control_net": "CONTROL_NET",
+        "image": "IMAGE"
+      },
+      "widgets": [
+        "strength",
+        "start_percent",
+        "end_percent"
+      ],
+      "widget_count": 3
+    },
+    "UpscaleModelLoader": {
+      "outputs": [
+        "UPSCALE_MODEL"
+      ],
+      "connection_inputs": {},
+      "widgets": [
+        "model_name"
+      ],
+      "widget_count": 1
+    },
+    "ImageUpscaleWithModel": {
+      "outputs": [
+        "IMAGE"
+      ],
+      "connection_inputs": {
+        "upscale_model": "UPSCALE_MODEL",
+        "image": "IMAGE"
+      },
+      "widgets": [],
+      "widget_count": 0
+    },
+    "ImageScale": {
+      "outputs": [
+        "IMAGE"
+      ],
+      "connection_inputs": {
+        "image": "IMAGE"
+      },
+      "widgets": [
+        "upscale_method",
+        "width",
+        "height",
+        "crop"
+      ],
+      "widget_count": 4
+    },
+    "CLIPSetLastLayer": {
+      "outputs": [
+        "CLIP"
+      ],
+      "connection_inputs": {
+        "clip": "CLIP"
+      },
+      "widgets": [
+        "stop_at_clip_layer"
+      ],
+      "widget_count": 1
+    },
+    "VAEDecodeTiled": {
+      "outputs": [
+        "IMAGE"
+      ],
+      "connection_inputs": {
+        "samples": "LATENT",
+        "vae": "VAE"
+      },
+      "widgets": [
+        "tile_size",
+        "overlap",
+        "temporal_size",
+        "temporal_overlap"
+      ],
+      "widget_count": 4
+    },
+    "GrowMask": {
+      "outputs": [
+        "MASK"
+      ],
+      "connection_inputs": {
+        "mask": "MASK"
+      },
+      "widgets": [
+        "expand",
+        "tapered_corners"
+      ],
+      "widget_count": 2
+    },
+    "InvertMask": {
+      "outputs": [
+        "MASK"
+      ],
+      "connection_inputs": {
+        "mask": "MASK"
+      },
+      "widgets": [],
+      "widget_count": 0
+    }
+  },
+  "samplers": [
+    "euler",
+    "euler_ancestral",
+    "heun",
+    "heunpp2",
+    "dpm_2",
+    "dpm_2_ancestral",
+    "lms",
+    "dpm_fast",
+    "dpm_adaptive",
+    "dpmpp_2s_ancestral",
+    "dpmpp_sde",
+    "dpmpp_sde_gpu",
+    "dpmpp_2m",
+    "dpmpp_2m_sde",
+    "dpmpp_2m_sde_gpu",
+    "ddim",
+    "uni_pc",
+    "uni_pc_bh2"
+  ],
+  "schedulers": [
+    "normal",
+    "karras",
+    "exponential",
+    "sgm_uniform",
+    "simple",
+    "ddim_uniform",
+    "beta"
+  ],
+  "banned_type_substrings": [
+    "Flux",
+    "FLUX",
+    "Wan",
+    "Hunyuan",
+    "LTXV",
+    "Mochi",
+    "Cosmos",
+    "Cascade",
+    "SD3",
+    "TripleCLIP",
+    "DualCLIP",
+    "UNETLoader",
+    "SamplerCustom",
+    "BasicGuider",
+    "EmptySD3",
+    "EmptyHunyuan",
+    "EmptyMochi",
+    "EmptyCosmos",
+    "EmptyLTXV",
+    "SaveAnimated",
+    "SaveGLB",
+    "SaveAudio",
+    "StableAudio",
+    "IPAdapter",
+    "AnimateDiff",
+    "SVD_",
+    "VideoLinear",
+    "Kandinsky",
+    "Qwen",
+    "HiDream",
+    "Lumina"
+  ],
+  "socket_map": {
+    "CheckpointLoaderSimple": {
+      "MODEL": 0,
+      "CLIP": 1,
+      "VAE": 2
+    },
+    "LoraLoader": {
+      "MODEL": 0,
+      "CLIP": 1
+    },
+    "CLIPTextEncode": {
+      "CONDITIONING": 0
+    },
+    "EmptyLatentImage": {
+      "LATENT": 0
+    },
+    "KSampler": {
+      "LATENT": 0
+    },
+    "VAEDecode": {
+      "IMAGE": 0
+    },
+    "VAEEncode": {
+      "LATENT": 0
+    },
+    "VAEEncodeForInpaint": {
+      "LATENT": 0
+    },
+    "LoadImage": {
+      "IMAGE": 0,
+      "MASK": 1
+    },
+    "LoadImageMask": {
+      "MASK": 0
+    },
+    "ControlNetLoader": {
+      "CONTROL_NET": 0
+    },
+    "ControlNetApplyAdvanced": {
+      "positive": 0,
+      "negative": 1
+    },
+    "UpscaleModelLoader": {
+      "UPSCALE_MODEL": 0
+    },
+    "ImageUpscaleWithModel": {
+      "IMAGE": 0
+    },
+    "ImageScale": {
+      "IMAGE": 0
+    }
+  }
+}
